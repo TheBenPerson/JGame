@@ -1,0 +1,1 @@
+#!/bin/electron index.html
