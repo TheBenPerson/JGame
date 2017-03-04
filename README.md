@@ -10,13 +10,12 @@ The game can dynamically load maps from JSON files and implements basic colision
 
 Requirements:
 
-Either
-
 - A modern browser that supports the HTML5 canvas API
-- [Electron](http://electron.atom.io/)
+- or [Electron](http://electron.atom.io/)
 
-To run with a browser, open the file: index.html with the browser.
-To run with Electron, run exec.sh.
+To play online, [click me](https://thebenperson.github.io/JGame).
+To play offline, open index.html with your browser.
+To play with Electron, run exec.sh.
 
 ####Bugs:
 
