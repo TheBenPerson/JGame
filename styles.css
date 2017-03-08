@@ -5,14 +5,9 @@ body {
 
 }
 
-#article {
-
-	background-image: url("res/background.png");
-
-}
-
 canvas {
 
+	background-image: url("res/background.png");
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
