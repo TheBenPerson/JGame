@@ -25,7 +25,7 @@
 
 	"ref": [
 
-		"Brrr... It's pretty cold here!",
+		"Brrr... It's pretty cold here!\nYou should wear some warmer cloths\nreally...",
 		{ "map": "main.json", "x": 11, "y": -11 }
 
 	]

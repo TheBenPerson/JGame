@@ -33,30 +33,46 @@ var player = {
 	x: 0,
 	y: 0,
 	dir: 0,
+	sign: null,
 	speed: 5 / 32,
 	img: null,
 	onFire: false,
 	water: null,
 	inWater: false,
 	tFire: 0,
+	menu: "Welcome to the game: a pointless tile-based javascript game.\n\nControls:\n\n\tMovement: w, a, s, d keys\n\tKill grass: space key\n\tSet fullscreen: f key\n\nInstructions: (none)",
 
 	draw: function() {
 
-		var frame = (Math.round(t * this.speed) % 4) * 14;
-		var cY = this.dir * 18;
+		if (this.menu) {
 
-		context.drawImage(this.img, frame, cY, 14, 18, -21, -27, 42, 54);
+			context.drawImage(this.sign, -128, -128, 256, 256);
 
-		if (this.onFire) {
+			context.font = "15px sans-serif";
+			context.fillStyle = "white";
+			this.menu = this.menu.split('\n');
+			for (var i = 0; i < this.menu.length; i++)
+				context.fillText(this.menu[i], -108, -108 + (i * 17));
 
-			frame = (Math.round(t / 5) % 10) * 15;
-			context.drawImage(world.fire, frame, 0, 15, 15, -30, -30, 60, 60);
+		} else {
+
+			var frame = (Math.round(t * this.speed) % 4) * 14;
+			var cY = this.dir * 18;
+
+			context.drawImage(this.img, frame, cY, 14, 18, -21, -27, 42, 54);
+
+			if (this.onFire) {
+
+				frame = (Math.round(t / 5) % 10) * 15;
+				context.drawImage(world.fire, frame, 0, 15, 15, -30, -30, 60, 60);
+
+			}
 
 		}
 
+		context.font = "30px sans-serif";
 		context.fillStyle="red";
 		context.fillText("Health: " + this.health, -(canvas.dWidth) + 10, (-canvas.dHeight) + 35);
-
 
 	},
 
@@ -66,10 +82,14 @@ var player = {
 		this.img.src = "res/player.png";
 		this.img.onload = function() {
 
-			alert("Welcome to the game: a pointless tile-based javascript game.\n\nControls:\n\n\tMovement: w, a, s, d keys\n\tKill grass: space key\n\tSet fullscreen: f key\n\nInstructions: (none)");
+			player.sign = new Image();
+			player.sign.src = "res/sign.png";
+			player.sign.onload = function() {
 
-			draw();
-			window.requestAnimationFrame(tick);
+				draw();
+				window.requestAnimationFrame(tick);
+
+			}
 
 		};
 
@@ -106,10 +126,30 @@ var player = {
 		}
 
 		if (keyboard.space) moving = true;
-
 		var teleporter = null;
 
 		if (moving) {
+
+			player.menu = null;
+
+			if (this.health <= 0) {
+
+				this.x = 0;
+				this.y = 0;
+
+				this.health = 100;
+				this.onFire = false;
+
+				keyboard.reset();
+
+				if (world.map != "main.json") world.loadMap("main.json");
+				else reDraw = true;
+
+				moving = false;
+
+				return;
+
+			}
 
 			var minX = Math.floor((world.dWidth) + this.x - this.ndWidth);
 			var maxX = Math.ceil((world.dWidth) + this.x + this.ndWidth);
@@ -178,16 +218,7 @@ var player = {
 
 			}
 
-			if (isNaN(sign)) {
-
-				alert("Wow, a sign!!\n\nIt reads: \n\n" + sign);
-
-				keyboard.w = false;
-				keyboard.s = false;
-				keyboard.a = false;
-				keyboard.d = false;
-
-			}
+			if (isNaN(sign)) player.menu = sign;
 
 			reDraw = true;
 
@@ -195,18 +226,9 @@ var player = {
 
 		if (this.health <= 0) {
 
-			alert("Congrats: you burned to death.\nWhat were you expecting?");
-
-			this.x = 0;
-			this.y = 0;
-
-			this.health = 100;
-			this.onFire = false;
-
-			keyboard.reset();
-
-			if (world.map != "main.json") world.loadMap("main.json");
-			else reDraw = true;
+			player.menu = "Congrats: you burned to death.\nWhat were you expecting?";
+			reDraw = true;
+			return;
 
 		}
 
