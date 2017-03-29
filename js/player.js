@@ -3,7 +3,7 @@
 JGame Development Build
 https://github.com/TheBenPerson/JGame
 
-Copyright (C) 2016 Ben Stockett <thebenstockett@gmail.com>
+Copyright (C) 2016 - 2017 Ben Stockett <thebenstockett@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,32 +27,38 @@ SOFTWARE.
 
 var player = {
 
-	health: 100,
-	ndWidth: 21 / 32,
-	ndHeight: 27 / 32,
+	//movement
 	x: 0,
 	y: 0,
 	dir: 0,
-	sign: null,
 	speed: 5 / 32,
-	img: null,
+
+	//attributes
+	health: 100,
 	onFire: false,
-	water: null,
-	inWater: false,
-	tFire: 0,
-	menu: "Welcome to the game: a pointless tile-based javascript game.\n\nControls:\n\n\tMovement: w, a, s, d keys\n\tKill grass: space key\n\tSet fullscreen: f key\n\nInstructions: (none)",
+	tFire: 0, //fire timer
+
+	//drawing
+	img: null,
+	ndWidth: 21 / 32,
+	ndHeight: 27 / 32,
+
+	//sign stuff
+	sign: null,
+	signText: "Welcome to the game:\na pointless tile-based javascript game.\n\nControls:\n\nMovement: w, a, s, d keys\nKill grass: space key\n\nInstructions: (none)",
 
 	draw: function() {
 
-		if (this.menu) {
+		if (this.signText) {
 
 			context.drawImage(this.sign, -128, -128, 256, 256);
 
 			context.font = "15px sans-serif";
 			context.fillStyle = "white";
-			this.menu = this.menu.split('\n');
-			for (var i = 0; i < this.menu.length; i++)
-				context.fillText(this.menu[i], -108, -108 + (i * 17));
+
+			this.signText = this.signText.split('\n');
+			for (var i = 0; i < this.signText.length; i++)
+				context.fillText(this.signText[i], -118, -108 + (i * 17));
 
 		} else {
 
@@ -72,6 +78,7 @@ var player = {
 
 		context.font = "30px sans-serif";
 		context.fillStyle="red";
+
 		context.fillText("Health: " + this.health, -(canvas.dWidth) + 10, (-canvas.dHeight) + 35);
 
 	},
@@ -84,9 +91,9 @@ var player = {
 
 			player.sign = new Image();
 			player.sign.src = "res/sign.png";
-			player.sign.onload = function() {
+			player.sign.onload = function() { //load images
 
-				draw();
+				draw(); //draw initial frame
 				window.requestAnimationFrame(tick);
 
 			}
@@ -126,11 +133,12 @@ var player = {
 		}
 
 		if (keyboard.space) moving = true;
+
 		var teleporter = null;
 
 		if (moving) {
 
-			player.menu = null;
+			player.signText = null;
 
 			if (this.health <= 0) {
 
@@ -140,12 +148,8 @@ var player = {
 				this.health = 100;
 				this.onFire = false;
 
-				keyboard.reset();
-
-				if (world.map != "main.json") world.loadMap("main.json");
+				world.loadMap("main.json");
 				else reDraw = true;
-
-				moving = false;
 
 				return;
 
@@ -169,7 +173,7 @@ var player = {
 
 					if (block == 0) bump = true;
 
-					if (isNaN(block) && moving) {
+					if (isNaN(block)) {
 
 						switch (block.id) {
 
@@ -218,7 +222,7 @@ var player = {
 
 			}
 
-			if (isNaN(sign)) player.menu = sign;
+			if (isNaN(sign)) player.signText = sign;
 
 			reDraw = true;
 
@@ -226,8 +230,9 @@ var player = {
 
 		if (this.health <= 0) {
 
-			player.menu = "Congrats: you burned to death.\nWhat were you expecting?";
+			player.signText = "Congrats: you burned to death.\nWhat were you expecting?";
 			reDraw = true;
+
 			return;
 
 		}

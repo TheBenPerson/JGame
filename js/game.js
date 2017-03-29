@@ -3,7 +3,7 @@
 JGame Development Build
 https://github.com/TheBenPerson/JGame
 
-Copyright (C) 2016 Ben Stockett <thebenstockett@gmail.com>
+Copyright (C) 2016 - 2017 Ben Stockett <thebenstockett@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,8 @@ SOFTWARE.
 
 */
 
-window.onload = init;
+window.onload = init; //call init when page has loaded
+
 var canvas;
 var context;
 
@@ -39,18 +40,15 @@ var keyboard = {
 
 	keyDown: function(event) {
 
-		if (event.key == 'w') keyboard.w = true;
-		else if (event.key == 's') keyboard.s = true;
-		else if (event.key == 'a') keyboard.a = true;
-		else if (event.key == 'd') keyboard.d = true;
-		else if (event.key == ' ') {
+		keyboard.w = (event.key == 'w');
+		keyboard.s = (event.key == 's');
+		keyboard.a = (event.key == 'a');
+		keyboard.d = (event.key == 'd');
+
+		if (event.key == ' ') {
 
 			keyboard.space = true;
 			event.preventDefault();
-
-		} else if (event.key == 'f') {
-
-			document.getElementById("article").mozRequestFullScreen();
 
 		}
 
@@ -80,9 +78,9 @@ var keyboard = {
 
 function draw() {
 
-	context.setTransform(1, 0, 0, 1, 0, 0);
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	context.translate(canvas.dWidth, canvas.dHeight);
+	context.setTransform(1, 0, 0, 1, 0, 0); //reset previous transformations
+	context.clearRect(0, 0, canvas.width, canvas.height); //clear screen
+	context.translate(canvas.dWidth, canvas.dHeight); //(0, 0) is now the center of screen
 
 	world.draw();
 	player.draw();
@@ -122,22 +120,13 @@ function init() {
 
 function onResize() {
 
-	if (!document.mozFullScreen) {
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 
-		canvas.width = canvas.parentNode.clientWidth;
-		canvas.height = window.innerHeight;
-
-	} else {
-
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-
-	}
-
-	if (canvas.width % 2 != 0) canvas.width--;
+	if (canvas.width % 2) canvas.width--;
 	canvas.dWidth = canvas.width / 2;
 
-	if (canvas.height % 2 != 0) canvas.height--;
+	if (canvas.height % 2) canvas.height--;
 	canvas.dHeight = canvas.height / 2;
 
 	context.mozImageSmoothingEnabled = false;
@@ -149,7 +138,7 @@ function onResize() {
 
 }
 
-var t = 0;
+var t = 0; //timer variable
 var reDraw;
 
 function tick() {

@@ -3,7 +3,7 @@
 JGame Development Build
 https://github.com/TheBenPerson/JGame
 
-Copyright (C) 2016 Ben Stockett <thebenstockett@gmail.com>
+Copyright (C) 2016 - 2017 Ben Stockett <thebenstockett@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -72,6 +72,8 @@ var world = {
 	},
 
 	loadMap: function(file) {
+
+		if (file == this.map) return;
 
 		var request = new XMLHttpRequest();
 		request.open("GET", "map/" + file, false);

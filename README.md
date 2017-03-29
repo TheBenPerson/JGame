@@ -17,12 +17,6 @@ To play online, [click me](https://thebenperson.github.io/JGame).
 To play offline, open index.html with your browser.
 To play with Electron, run exec.sh.
 
-####Bugs:
-
-The game works perfectly on Firefox, but Chrome refuses to work properly.
-This is because some browsers do not allow "cross-domain" XmlHttpRequests on local files.
-One workaround for Chrome is to start Chrome with the flag: `--disable-web-security`.
-
 ####Artwork:
 
 - [isaiah658](https://openclipart.org/detail/215080/retro-character-sprite-sheet)
