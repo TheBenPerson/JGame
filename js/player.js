@@ -30,6 +30,9 @@ var player = {
 	//movement
 	x: 0,
 	y: 0,
+	vX: 0,
+	vY: 0,
+	moving: false,
 	dir: 0,
 	speed: 5 / 32,
 
@@ -49,7 +52,7 @@ var player = {
 
 	draw: function() {
 
-		if (this.signText) {
+		if (this.signText && this.signText.split) {
 
 			context.drawImage(this.sign, -128, -128, 256, 256);
 
@@ -62,7 +65,9 @@ var player = {
 
 		} else {
 
-			var frame = (Math.round(t * this.speed) % 4) * 14;
+			var frame = 0;
+
+			if (this.moving) frame = (Math.round(t * this.speed) % 4) * 14;
 			var cY = this.dir * 18;
 
 			context.drawImage(this.img, frame, cY, 14, 18, -21, -27, 42, 54);
@@ -93,8 +98,7 @@ var player = {
 			player.sign.src = "res/sign.png";
 			player.sign.onload = function() { //load images
 
-				draw(); //draw initial frame
-				window.requestAnimationFrame(tick);
+				eye.init();
 
 			}
 
@@ -104,7 +108,7 @@ var player = {
 
 	tick: function() {
 
-		var moving = true;
+		this.moving = true;
 
 		if (keyboard.w) {
 
@@ -128,17 +132,26 @@ var player = {
 
 		} else {
 
-			moving = false;
+			this.moving = false;
 
 		}
 
-		if (keyboard.space) moving = true;
+		this.x += this.vX;
+		this.y += this.vY;
 
-		var teleporter = null;
+		this.vX--;
+		this.vY--;
 
-		if (moving) {
+		if (this.vX < 0) this.vX = 0;
+		if (this.vY < 0) this.vY = 0;
 
-			player.signText = null;
+		if (keyboard.space) this.moving = true;
+
+		var newMap = null;
+
+		if (this.moving) {
+
+			this.signText = null;
 
 			if (this.health <= 0) {
 
@@ -149,80 +162,25 @@ var player = {
 				this.onFire = false;
 
 				world.loadMap("main.json");
-				else reDraw = true;
+				reDraw = true;
 
 				return;
 
 			}
 
-			var minX = Math.floor((world.dWidth) + this.x - this.ndWidth);
-			var maxX = Math.ceil((world.dWidth) + this.x + this.ndWidth);
+			var blocks = world.getBlocks(this);
+			for (var i = 0; i < blocks.length; i++) {
 
-			var minY = Math.floor((world.dHeight) + this.y - this.ndHeight);
-			var maxY = Math.ceil((world.dHeight) + this.y + this.ndHeight);
+				var block = blocks[i].val;
 
-			var bump = false;
-			var sign = -1;
+				if ((block.id == 1) && (keyboard.space)) {
 
-			for (var r = minY; r < maxY; r++) {
+					world.bContext.drawImage(world.img, 2 * 16, 0, 16, 16, blocks[i].col * 32, blocks[i].row * 32, 32, 32);
 
-				for (var c = minX; c < maxX; c++) {
-
-					var Index = (r * world.width) + c;
-					var block = world.data[Index];
-
-					if (block == 0) bump = true;
-
-					if (isNaN(block)) {
-
-						switch (block.id) {
-
-							case 7:
-
-								teleporter = block.val;
-
-							break;
-							case 8:
-
-								sign = block.val;
-								bump = true;
-
-							break;
-
-						}
-
-					}
-
-					if (block == 4) {
-
-						this.onFire = false;
-
-					} else if (block == 6) {
-
-						this.onFire = true;
-						this.tFire = t;
-
-					} else if (block == 1 && keyboard.space) {
-
-						world.data[Index] = 2;
-						world.bContext.drawImage(world.img, 2 * 16, 0, 16, 16, (c % world.width) * 32, r * 32, 32, 32);
-
-					}
-
-				}
+				} else if (block.id == 7) newMap = block.val;
+				else if (block.id == 8) this.signText = block.val;
 
 			}
-
-			if (bump) {
-
-				if (this.dir == 3) this.y = maxY - world.dHeight - (2 - this.ndHeight);
-				else if (this.dir == 0) this.y = minY - world.dHeight + (2 - this.ndHeight);
-				else if (this.dir == 2) this.x = maxX - world.dWidth - (2 - this.ndWidth);
-				else if (this.dir == 1) this.x = minX - world.dWidth + (2 - this.ndWidth);
-
-			}
-
-			if (isNaN(sign)) player.signText = sign;
 
 			reDraw = true;
 
@@ -246,11 +204,11 @@ var player = {
 
 		}
 
-		if (teleporter) {
+		if (newMap) {
 
-			world.loadMap(teleporter.map);
-			player.x = teleporter.x;
-			player.y = teleporter.y;
+			world.loadMap(newMap.map);
+			player.x = newMap.x;
+			player.y = newMap.y;
 
 			keyboard.reset();
 			reDraw = true;

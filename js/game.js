@@ -40,10 +40,10 @@ var keyboard = {
 
 	keyDown: function(event) {
 
-		keyboard.w = (event.key == 'w');
-		keyboard.s = (event.key == 's');
-		keyboard.a = (event.key == 'a');
-		keyboard.d = (event.key == 'd');
+		if (event.key == 'w') keyboard.w = true;
+		else if (event.key == 's') keyboard.s = true;
+		else if (event.key == 'a') keyboard.a = true;
+		else if (event.key == 'd') keyboard.d = true;
 
 		if (event.key == ' ') {
 
@@ -84,6 +84,7 @@ function draw() {
 
 	world.draw();
 	player.draw();
+	eye.draw();
 
 }
 
@@ -146,6 +147,7 @@ function tick() {
 	reDraw = false;
 
 	player.tick();
+	eye.tick();
 	t++;
 
 	if (reDraw) draw();

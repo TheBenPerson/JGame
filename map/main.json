@@ -43,9 +43,9 @@
 
 		{ "map": "water.json", "x": 0, "y": 0 },
 		{ "map": "ice.json", "x": 0, "y": 0 },
-		"HINT: Run into signs to see what they say.",
+		"HINT: Run into signs to see what\nthey say.",
 		"WARNING: Beware of lava.",
-		"HINT: Somewhere around here is a teleporter.",
+		"HINT: Somewhere around here is a\nteleporter.",
 		"HINT: The answer is 42.",
 		{ "map": "lava.json", "x": 0, "y": 0 },
 		{ "map": "speed.json", "x": 0, "y": 0}

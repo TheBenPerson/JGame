@@ -49,6 +49,54 @@ var world = {
 
 	},
 
+	getBlocks: function(entity) {
+
+		var blocks = new Array();
+
+		var minX = Math.floor((this.dWidth) + entity.x - entity.ndWidth);
+		var maxX = Math.ceil((this.dWidth) + entity.x + entity.ndWidth);
+
+		var minY = Math.floor((this.dHeight) + entity.y - entity.ndHeight);
+		var maxY = Math.ceil((this.dHeight) + entity.y + entity.ndHeight);
+
+		var bump = false;
+
+		for (var r = minY; r < maxY; r++) {
+
+			for (var c = minX; c < maxX; c++) {
+
+				var index = (r * this.width) + c;
+				var block = this.data[index];
+
+				if (block.id == 0) bump = true;
+				else if (block.id == 8) bump = true;
+				else if (block.id == 4)  entity.onFire = false;
+				else if (block.id == 6) {
+
+					entity.onFire = true;
+					entity.tFire = t;
+
+				}
+
+				blocks.push({ row: r, col: c, val: block });
+
+			}
+
+		}
+
+		if (bump) {
+
+			if (entity.dir == 3) entity.y = maxY - this.dHeight - (2 - entity.ndHeight);
+			else if (entity.dir == 0) entity.y = minY - this.dHeight + (2 - entity.ndHeight);
+			else if (entity.dir == 2) entity.x = maxX - this.dWidth - (2 - entity.ndWidth);
+			else if (entity.dir == 1) entity.x = minX - this.dWidth + (2 - entity.ndWidth);
+
+		}
+
+		return blocks;
+
+	},
+
 	init: function() {
 
 		this.img = new Image();
@@ -95,13 +143,13 @@ var world = {
 		var c = 0;
 		for (var i = 0; i < this.data.length; i++) {
 
-			var num = this.data[i];
+			this.data[i] = {
 
-			if (num > 6) {
+				id: this.data[i],
 
-				this.data[i] = { id: num, val: map.ref[c++] };
+			};
 
-			}
+			if (this.data[i].id > 6) this.data[i].val = map.ref[c++];
 
 		}
 
