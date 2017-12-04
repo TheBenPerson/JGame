@@ -6,8 +6,7 @@
 JGame is a simple Javascript game I made that uses the HTML5 Canvas API.
 The game can dynamically load maps from JSON files and implements basic colision detection.
 
-![screenshots/1.png](screenshots/1.png)
-![screenshots/2.png](screenshots/2.png)
+![screenshots/1.png](screenshots/1.png) ![screenshots/2.png](screenshots/2.png)
 
 #### Running:
 
